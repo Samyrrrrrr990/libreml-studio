@@ -1,0 +1,46 @@
+# Operating systems and editors
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+.kaggle/
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+.venv/
+dist/
+build/
+*.egg-info/
+
+# JavaScript
+node_modules/
+apps/web/dist/
+coverage/
+*.tsbuildinfo
+
+# LibreML local projects and generated artifacts
+.libreml/
+*.libreml/
+artifacts/
+reports/generated/
+uploads/
+*.sqlite
+*.sqlite3
+
+# Logs and temporary files
+*.log
+tmp/
+.cache/

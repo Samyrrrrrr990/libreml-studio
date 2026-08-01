@@ -1,0 +1,70 @@
+name: Bug report
+description: Report reproducible incorrect behavior using synthetic or de-identified data.
+title: "[Bug]: "
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you. Never attach credentials, participant data, private project bundles, or exploit details. Security issues must follow SECURITY.md.
+  - type: checkboxes
+    attributes:
+      label: Safety check
+      options:
+        - label: This is not a security vulnerability.
+          required: true
+        - label: I used synthetic/de-identified reproduction data and removed secrets and identifying paths.
+          required: true
+  - type: input
+    id: version
+    attributes:
+      label: LibreML version and commit
+      placeholder: 0.1.0 / abc1234
+    validations:
+      required: true
+  - type: dropdown
+    id: mode
+    attributes:
+      label: Interface mode
+      options: [Learning, Research, Both, Not applicable]
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, architecture, Python, Node, browser/webview.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Minimal reproduction
+      description: Include exact nodes/configuration and a tiny synthetic dataset recipe.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior and safe error code
+      description: Do not paste raw sensitive rows, secrets, or full local paths.
+    validations:
+      required: true
+  - type: textarea
+    id: impact
+    attributes:
+      label: Research or data-integrity impact
+      description: Could this change a result, partition, warning, report, model, or saved project?
+    validations:
+      required: true
+  - type: textarea
+    id: extra
+    attributes:
+      label: Additional context
+      description: Sanitized screenshots, logs, or project schema version.

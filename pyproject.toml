@@ -1,0 +1,93 @@
+[build-system]
+requires = ["setuptools>=77", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "libreml-studio"
+version = "0.1.0"
+description = "Local-first visual machine-learning and statistical research studio"
+readme = { file = "README.md", content-type = "text/markdown" }
+license = "AGPL-3.0-or-later"
+authors = [{ name = "Samyar Shafiee" }]
+keywords = ["machine learning", "statistics", "reproducible research", "local-first"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Web Environment",
+  "Framework :: FastAPI",
+  "Intended Audience :: Science/Research",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "fastapi>=0.115,<1",
+  "httpx>=0.28,<1",
+  "numpy>=2.0,<3",
+  "openpyxl>=3.1,<4",
+  "pandas>=2.2,<3",
+  "pyarrow>=18,<24",
+  "pydantic>=2.10,<3",
+  "python-multipart>=0.0.20,<1",
+  "scikit-learn>=1.6,<2",
+  "scipy>=1.14,<2",
+  "uvicorn[standard]>=0.34,<1",
+]
+
+[project.optional-dependencies]
+dev = [
+  "mypy>=1.14,<2",
+  "pandas-stubs>=2.2,<3",
+  "pytest>=8.3,<9",
+  "pytest-cov>=6,<8",
+  "ruff>=0.9,<1",
+]
+
+[project.scripts]
+libreml-backend = "libreml_api.main:run"
+
+[project.urls]
+Homepage = "https://github.com/Samyrrrrrr990/libreml-studio"
+Documentation = "https://github.com/Samyrrrrrr990/libreml-studio/tree/main/docs"
+Issues = "https://github.com/Samyrrrrrr990/libreml-studio/issues"
+Repository = "https://github.com/Samyrrrrrr990/libreml-studio"
+
+[tool.setuptools.packages.find]
+where = ["python", "apps/backend"]
+include = ["libreml_*"]
+
+[tool.setuptools.package-data]
+libreml_api = [
+  "resources/datasets/*.csv",
+  "resources/datasets/*.md",
+  "resources/datasets/*.txt",
+]
+
+[tool.pytest.ini_options]
+addopts = "-ra --strict-config --strict-markers"
+testpaths = ["tests/backend"]
+pythonpath = ["python", "apps/backend"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+files = ["python", "apps/backend"]
+mypy_path = ["python", "apps/backend"]
+ignore_missing_imports = true
+
+[tool.coverage.run]
+branch = true
+source = ["python", "apps/backend"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true

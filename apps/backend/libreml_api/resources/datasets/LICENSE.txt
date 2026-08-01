@@ -1,0 +1,9 @@
+Community Learning Outcomes dataset
+
+To the extent possible under law, the LibreML Studio contributors have waived all copyright and related or neighboring rights to this synthetic dataset worldwide under the Creative Commons CC0 1.0 Universal Public Domain Dedication.
+
+SPDX-License-Identifier: CC0-1.0
+Canonical legal text: https://creativecommons.org/publicdomain/zero/1.0/legalcode
+Human-readable summary: https://creativecommons.org/publicdomain/zero/1.0/
+
+This notice applies to `community_learning_outcomes.csv` and its dataset documentation. It does not alter the licence governing LibreML Studio software.

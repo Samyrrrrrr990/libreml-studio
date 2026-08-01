@@ -1,0 +1,41 @@
+name: Release check
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v6
+      - uses: astral-sh/setup-uv@v8
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "20.19.0"
+          cache: npm
+      - run: uv sync --all-extras --locked
+      - run: uv run pytest
+      - run: uv build
+      - run: npm ci
+      - run: npm run test
+      - run: npm run build
+      - name: Bundle web preview
+        run: tar -C apps/web -czf libreml-web-preview.tgz dist
+      - uses: actions/upload-artifact@v7
+        with:
+          name: research-preview-builds
+          if-no-files-found: error
+          path: |
+            dist/*
+            libreml-web-preview.tgz
+            LICENSE
+            CITATION.cff

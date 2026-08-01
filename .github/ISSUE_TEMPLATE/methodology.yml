@@ -1,0 +1,45 @@
+name: Methodology review
+description: Propose or challenge a statistical, ML, validation, or interpretation behavior.
+title: "[Methodology]: "
+labels: ["methodology", "needs-review"]
+body:
+  - type: textarea
+    id: question
+    attributes:
+      label: Research question and population
+    validations:
+      required: true
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Procedure or behavior under review
+      description: Include node/rule/metric and version when applicable.
+    validations:
+      required: true
+  - type: textarea
+    id: assumptions
+    attributes:
+      label: Assumptions and applicability boundary
+    validations:
+      required: true
+  - type: textarea
+    id: references
+    attributes:
+      label: Primary or authoritative references
+      description: Link sources and identify relevant sections; avoid unsupported blog-only claims.
+    validations:
+      required: true
+  - type: textarea
+    id: fixtures
+    attributes:
+      label: Reproducible example and expected values
+      description: Use synthetic data and preferably an independent calculation/implementation.
+    validations:
+      required: true
+  - type: textarea
+    id: risks
+    attributes:
+      label: Misinterpretation and edge cases
+      description: Missingness, small samples, degeneracy, dependence, multiplicity, causality, fairness, or units.
+    validations:
+      required: true

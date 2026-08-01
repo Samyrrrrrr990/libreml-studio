@@ -1,0 +1,19 @@
+{
+  "name": "libreml-studio",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Local-first visual machine-learning and statistical research studio",
+  "workspaces": [
+    "apps/web"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace @libreml/web",
+    "build": "npm run build --workspace @libreml/web",
+    "lint": "npm run lint --workspace @libreml/web",
+    "typecheck": "npm run typecheck --workspace @libreml/web",
+    "test": "npm run test --workspace @libreml/web"
+  },
+  "engines": {
+    "node": ">=20.19.0"
+  }
+}

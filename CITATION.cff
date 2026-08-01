@@ -1,0 +1,33 @@
+cff-version: 1.2.0
+message: >-
+  If LibreML Studio materially supports published or shared research, please
+  cite this software and report the exact version or commit used. Citation is
+  a scholarly request, not an additional condition of the software license.
+title: LibreML Studio
+type: software
+authors:
+  - given-names: Samyar
+    family-names: Shafiee
+version: 0.1.0
+license: AGPL-3.0-or-later
+repository-code: https://github.com/Samyrrrrrr990/libreml-studio
+url: https://github.com/Samyrrrrrr990/libreml-studio
+abstract: >-
+  A local-first visual environment for inspectable, reproducible machine
+  learning and statistical research workflows.
+keywords:
+  - machine learning
+  - statistics
+  - reproducible research
+  - visual workflow
+  - local-first
+  - research integrity
+preferred-citation:
+  type: software
+  title: LibreML Studio
+  authors:
+    - given-names: Samyar
+      family-names: Shafiee
+  version: 0.1.0
+  license: AGPL-3.0-or-later
+  url: https://github.com/Samyrrrrrr990/libreml-studio

@@ -1,0 +1,56 @@
+name: Feature proposal
+description: Propose a product or engineering capability with a concrete research need.
+title: "[Feature]: "
+labels: ["enhancement", "needs-triage"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Researcher problem
+      description: Describe the decision or task, not only a preferred UI/control.
+    validations:
+      required: true
+  - type: textarea
+    id: workflow
+    attributes:
+      label: Example workflow
+      description: Who uses it, inputs, meaningful decisions, outputs, and failure cases.
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Proposed scope and non-goals
+    validations:
+      required: true
+  - type: dropdown
+    id: network
+    attributes:
+      label: Network requirement
+      options:
+        - Works completely offline
+        - Optional explicit network action
+        - Unsure
+    validations:
+      required: true
+  - type: textarea
+    id: integrity
+    attributes:
+      label: Methodology, privacy, and security considerations
+      description: Consequential choices, data leaving device, secrets, untrusted content, misleading outputs.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Verifiable acceptance criteria
+    validations:
+      required: true
+  - type: checkboxes
+    attributes:
+      label: Product principles
+      options:
+        - label: This does not require a mandatory paid API, account, telemetry, or hosted model.
+          required: true
+        - label: I checked the roadmap and existing issues.
+          required: true
