@@ -11,6 +11,7 @@ This documentation describes the intended production architecture and the narrow
 - [Development setup](development/setup.md)
 - [Release process](development/release-process.md)
 - [Node authoring](development/node-authoring.md), [validation rules](development/validation-rules.md), and [explanations](development/explanations.md)
+- [Design system](development/design-system.md)
 - [Statistical methodology](methodology/statistical-methodology.md)
 - [Threat model](security/threat-model.md)
 - [Glossary](reference/glossary.md)

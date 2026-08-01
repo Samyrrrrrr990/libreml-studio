@@ -1,0 +1,588 @@
+/*
+ * Workflow canvas and node cards.
+ *
+ * The canvas is the surface the user actually works on, so it sits below the
+ * panels in the elevation stack rather than beside them: a recessed background
+ * with raised cards floating on it. Previously every region shared roughly the
+ * same lightness, which left the workflow competing with its own chrome.
+ */
+
+.canvas-region {
+  position: relative;
+  display: grid;
+  grid-template-rows: 38px minmax(0, 1fr);
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--bg-canvas);
+}
+
+.canvas-titlebar {
+  z-index: var(--z-canvas-ui);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+  padding: 0 var(--space-2);
+  border-bottom: 1px solid var(--line);
+  background: var(--bg-surface);
+}
+
+.canvas-titlebar__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+  color: var(--muted);
+  font-size: var(--text-xs);
+}
+
+.canvas-titlebar__meta strong {
+  color: var(--ink);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+}
+
+.canvas-titlebar__actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-left: auto;
+}
+
+.canvas-drawer-button {
+  display: none;
+}
+
+.canvas-region .react-flow {
+  background: var(--bg-canvas);
+}
+
+.canvas-region .react-flow__pane {
+  cursor: default;
+}
+
+.canvas-region .react-flow__pane.dragging {
+  cursor: grabbing;
+}
+
+/* ============================================================== Node card */
+
+.research-node {
+  position: relative;
+  width: 232px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--bg-raised);
+  color: var(--ink);
+  box-shadow: var(--shadow-md);
+  transition:
+    border-color var(--dur-fast) ease,
+    box-shadow var(--dur-fast) ease,
+    transform var(--dur-fast) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .research-node:hover {
+    border-color: var(--muted);
+    box-shadow: var(--shadow-lg);
+  }
+}
+
+.research-node.is-selected {
+  border-color: var(--accent);
+  box-shadow:
+    0 0 0 2px var(--accent-surface),
+    var(--shadow-lg);
+}
+
+/*
+ * Status is carried by a left edge stripe rather than a dedicated footer row.
+ * The old layout spent a full row on every node to say "Not run", which is the
+ * least informative state there is.
+ */
+.research-node::before {
+  position: absolute;
+  top: -1px;
+  bottom: -1px;
+  left: -1px;
+  width: 3px;
+  border-radius: var(--radius) 0 0 var(--radius);
+  content: '';
+  background: transparent;
+  transition: background-color var(--dur-fast) ease;
+}
+
+.research-node.status-running::before {
+  background: var(--accent);
+}
+
+.research-node.status-success::before {
+  background: var(--success);
+}
+
+.research-node.status-warning::before,
+.research-node.status-stale::before {
+  background: var(--caution);
+}
+
+.research-node.status-failed::before {
+  background: var(--danger);
+}
+
+.research-node.status-failed {
+  border-color: var(--danger-line);
+}
+
+.research-node.status-stale {
+  border-style: dashed;
+}
+
+.research-node__header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+}
+
+.research-node__icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-sunken);
+  color: var(--ink-soft);
+}
+
+.research-node__heading {
+  display: grid;
+  min-width: 0;
+}
+
+.research-node__heading strong {
+  overflow: hidden;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-tight);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.research-node__heading small {
+  color: var(--muted);
+  font-size: var(--text-2xs);
+  line-height: var(--leading-tight);
+}
+
+/* Compact status marker in the header corner. */
+.research-node__status {
+  display: inline-grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: var(--radius-full);
+  color: var(--faint);
+}
+
+.status-running .research-node__status {
+  color: var(--accent);
+}
+
+.status-success .research-node__status {
+  color: var(--success);
+}
+
+.status-warning .research-node__status,
+.status-stale .research-node__status {
+  color: var(--caution);
+}
+
+.status-failed .research-node__status {
+  color: var(--danger);
+}
+
+.research-node__warning {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 1px var(--space-1);
+  border-radius: var(--radius-full);
+  background: var(--caution-surface);
+  color: var(--caution);
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-bold);
+}
+
+/* ---------------------------------------------------------------- Ports */
+
+.research-node__ports {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 0 var(--space-2);
+  padding: var(--space-1) 0 var(--space-2);
+  border-top: 1px solid var(--line);
+}
+
+.research-node__port-column {
+  display: grid;
+  align-content: start;
+  gap: 1px;
+  min-width: 0;
+}
+
+.research-node__port-column.is-output {
+  text-align: right;
+}
+
+/*
+ * A port is one line: its label. The type used to be printed underneath in
+ * 7.5px monospace on every port of every node, which at fit-zoom was texture
+ * rather than text. Type now reads from the handle colour, and the full name
+ * is available on hover and in the inspector.
+ */
+.research-node__port {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 20px;
+  padding: 0 var(--space-3);
+}
+
+.research-node__port-column.is-output .research-node__port {
+  justify-content: flex-end;
+}
+
+.research-node__port span {
+  overflow: hidden;
+  color: var(--ink-soft);
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-medium);
+  line-height: var(--leading-snug);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.research-node__port small {
+  display: none;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 8px;
+}
+
+.research-node__footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: var(--text-2xs);
+}
+
+.node-duration {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.node-progress {
+  position: absolute;
+  right: 1px;
+  bottom: 0;
+  left: 1px;
+  height: 2px;
+  overflow: hidden;
+  border-radius: 0 0 var(--radius) var(--radius);
+}
+
+.node-progress span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-origin: left;
+  background: var(--accent);
+  transition: transform var(--dur-base) var(--ease-out);
+}
+
+/* -------------------------------------------------------------- Handles */
+
+.typed-handle {
+  width: 9px !important;
+  height: 9px !important;
+  border: 2px solid var(--bg-raised) !important;
+  background: var(--port-color, var(--port-generic)) !important;
+  transition:
+    transform var(--dur-fast) var(--ease-out),
+    box-shadow var(--dur-fast) ease;
+}
+
+.typed-handle.react-flow__handle-left {
+  left: -5px !important;
+}
+
+.typed-handle.react-flow__handle-right {
+  right: -5px !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .typed-handle:hover {
+    transform: scale(1.35);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--port-color, var(--port-generic)) 24%, transparent);
+  }
+}
+
+.typed-handle.connectingfrom,
+.typed-handle.connectingto {
+  transform: scale(1.35);
+}
+
+.port-color-dataset {
+  --port-color: var(--port-dataset);
+}
+
+.port-color-model {
+  --port-color: var(--port-model);
+}
+
+.port-color-metrics {
+  --port-color: var(--port-metrics);
+}
+
+.port-color-report {
+  --port-color: var(--port-report);
+}
+
+.port-color-generic {
+  --port-color: var(--port-generic);
+}
+
+/*
+ * Zoom level of detail.
+ *
+ * React Flow renders every node at every zoom, so at fit-zoom a workflow of
+ * nine nodes became nine blocks of unreadable 8px text. Detail is dropped as
+ * the viewport pulls back: at a distance the user needs to know what each box
+ * is and how the boxes connect, not what every port is called.
+ *
+ * The ports container is never removed from layout, only emptied of text.
+ * `display: none` here would collapse the handles to zero size, and React Flow
+ * derives every edge endpoint from the measured handle rect: the edges would
+ * still render, at meaningless coordinates. Row height still changes, so
+ * `useUpdateNodeInternals` re-measures on each band crossing.
+ */
+.canvas-region[data-zoom='far'] .research-node__port span,
+.canvas-region[data-zoom='far'] .research-node__footer,
+.canvas-region[data-zoom='far'] .research-node__heading small,
+.canvas-region[data-zoom='far'] .research-node__status {
+  display: none;
+}
+
+.canvas-region[data-zoom='far'] .research-node__ports {
+  padding: var(--space-1) 0;
+  border-top-color: transparent;
+}
+
+.canvas-region[data-zoom='far'] .research-node__port {
+  min-height: 10px;
+}
+
+.canvas-region[data-zoom='far'] .research-node__header {
+  padding: var(--space-4);
+}
+
+/*
+ * The title grows as the viewport pulls back so it survives the reduction: at
+ * 0.5 zoom a 20px title still renders around 10px on screen, while the 12px
+ * title it replaces would render at 6px. It wraps to two lines rather than
+ * truncating, because at this distance the name is the only thing being read.
+ */
+.canvas-region[data-zoom='far'] .research-node__heading strong {
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: 20px;
+  line-height: var(--leading-tight);
+  white-space: normal;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.canvas-region[data-zoom='far'] .research-node__icon {
+  width: 32px;
+  height: 32px;
+}
+
+.canvas-region[data-zoom='far'] .research-node__warning {
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--text-base);
+}
+
+.canvas-region[data-zoom='mid'] .research-node__heading small {
+  display: none;
+}
+
+.canvas-region[data-zoom='mid'] .research-node__port span {
+  font-size: var(--text-xs);
+}
+
+/* Type captions return only when the user is close enough to read them. */
+.canvas-region[data-zoom='near'] .research-node__port small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.canvas-region[data-zoom='near'] .research-node__port {
+  display: grid;
+  align-content: center;
+  min-height: 30px;
+}
+
+/* ---------------------------------------------------------------- Edges */
+
+.research-edge {
+  stroke: var(--line-strong);
+  stroke-width: 1.6;
+  transition:
+    stroke var(--dur-fast) ease,
+    stroke-width var(--dur-fast) ease;
+}
+
+.research-edge.is-typed {
+  stroke: color-mix(in srgb, var(--edge-color, var(--port-generic)) 60%, transparent);
+}
+
+.research-edge.is-selected {
+  stroke: var(--port-color, var(--accent));
+  stroke-width: 2.4;
+}
+
+/*
+ * Edge type labels appear on hover or selection only.
+ *
+ * Rendering a label on every edge meant the densest region of the canvas, where
+ * edges converge, also carried the most text. The information is worth having
+ * on demand and expensive to show at rest.
+ */
+.edge-type-label {
+  position: absolute;
+  padding: 1px var(--space-1);
+  border: 1px solid var(--port-color, var(--line));
+  border-radius: 4px;
+  background: var(--bg-raised);
+  color: var(--port-color, var(--ink-soft));
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: var(--weight-medium);
+  box-shadow: var(--shadow-sm);
+  pointer-events: none;
+}
+
+.edge-type-label.is-visible {
+  animation: edge-label-in var(--dur-fast) var(--ease-out);
+}
+
+@keyframes edge-label-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* ------------------------------------------------------- Canvas controls */
+
+.workflow-controls,
+.workflow-minimap {
+  overflow: hidden;
+  border: 1px solid var(--line) !important;
+  border-radius: var(--radius-sm) !important;
+  background: var(--bg-surface) !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+.workflow-controls {
+  left: var(--space-3) !important;
+  bottom: var(--space-3) !important;
+}
+
+.workflow-controls button {
+  width: 26px !important;
+  height: 26px !important;
+  border-bottom: 1px solid var(--line) !important;
+  background: transparent !important;
+  color: var(--ink-soft) !important;
+  fill: var(--ink-soft) !important;
+  transition: background-color var(--dur-fast) ease;
+}
+
+.workflow-controls button:last-child {
+  border-bottom: 0 !important;
+}
+
+.workflow-controls button:hover {
+  background: var(--bg-hover) !important;
+}
+
+/* The minimap was large enough to obscure the workflow it was mapping. */
+.workflow-minimap {
+  width: 148px !important;
+  height: 92px !important;
+  right: var(--space-3) !important;
+  bottom: var(--space-3) !important;
+  opacity: 0.75;
+  transition: opacity var(--dur-base) ease;
+}
+
+.workflow-minimap:hover {
+  opacity: 1;
+}
+
+.react-flow__attribution {
+  right: var(--space-3) !important;
+  bottom: calc(92px + var(--space-5)) !important;
+  padding: 1px var(--space-1) !important;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--bg-surface) 80%, transparent) !important;
+  font-size: 9px !important;
+}
+
+.react-flow__attribution a {
+  color: var(--faint) !important;
+}
+
+/* Type legend: makes the handle colours mean something without a manual. */
+.canvas-legend {
+  position: absolute;
+  bottom: var(--space-3);
+  left: calc(var(--space-3) + 34px);
+  z-index: var(--z-canvas-ui);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-full);
+  background: color-mix(in srgb, var(--bg-surface) 92%, transparent);
+  backdrop-filter: blur(8px);
+  box-shadow: var(--shadow-sm);
+  pointer-events: none;
+}
+
+.canvas-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--muted);
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-medium);
+  white-space: nowrap;
+}
+
+.canvas-legend i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--legend-color);
+}

@@ -61,6 +61,8 @@ Run the narrowest relevant tests while iterating and the complete applicable sui
 - Keep dependencies controlled; document maintenance, license, and security impact.
 - Use plain-language UI copy, visible focus, semantic controls, and no color-only state.
 - Honor reduced motion. Avoid animation that delays work or implies false progress.
+- Style the workbench through the tokens in `apps/web/src/styles/tokens.css`. A literal colour, size, or duration in a component stylesheet needs a documented reason. See [design system](docs/development/design-system.md).
+- Colour tokens are contrast-tested. Do not change a palette value without running `npm run test`.
 
 ## Non-negotiable constraints
 

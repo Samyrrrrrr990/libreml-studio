@@ -1,0 +1,829 @@
+/* Bottom artifact panel: data, integrity, results, ledger, report, predict. */
+
+.bottom-panel {
+  position: relative;
+  z-index: var(--z-panel);
+  display: grid;
+  grid-template-rows: var(--panel-tabs-height) minmax(0, 1fr);
+  min-height: var(--panel-tabs-height);
+  border-top: 1px solid var(--line);
+  background: var(--bg-surface);
+}
+
+.bottom-panel__tabs {
+  display: flex;
+  align-items: stretch;
+  min-width: 0;
+  padding: 0 var(--space-2);
+  overflow-x: auto;
+  border-bottom: 1px solid var(--line);
+  scrollbar-width: none;
+}
+
+.bottom-panel__tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.bottom-panel__tabs > button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: max-content;
+  padding: 0 var(--space-3);
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  transition: color var(--dur-fast) ease;
+}
+
+/* The active marker is a pseudo-element rather than a border so that switching
+ * tabs does not shift the row by a pixel. */
+.bottom-panel__tabs > button::after {
+  position: absolute;
+  right: var(--space-2);
+  bottom: 0;
+  left: var(--space-2);
+  height: 2px;
+  border-radius: 2px 2px 0 0;
+  background: transparent;
+  content: '';
+  transition: background-color var(--dur-fast) ease;
+}
+
+.bottom-panel__tabs > button.is-active {
+  color: var(--ink);
+  font-weight: var(--weight-semibold);
+}
+
+.bottom-panel__tabs > button.is-active::after {
+  background: var(--accent);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .bottom-panel__tabs > button:hover {
+    color: var(--ink);
+  }
+}
+
+.bottom-panel__tabs > button small {
+  display: grid;
+  place-items: center;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 var(--space-1);
+  border-radius: var(--radius-full);
+  background: var(--caution-surface);
+  color: var(--caution);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: var(--weight-semibold);
+}
+
+.bottom-panel__tabs .panel-collapse {
+  position: sticky;
+  right: 0;
+  margin-left: auto;
+  padding: 0 var(--space-2);
+  border-left: 1px solid var(--line);
+  background: var(--bg-surface);
+  color: var(--muted);
+}
+
+.bottom-panel__tabs .panel-collapse::after {
+  display: none;
+}
+
+.bottom-panel__content {
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  background: var(--bg-surface);
+}
+
+.data-preview-panel,
+.results-panel,
+.ledger-panel,
+.report-panel,
+.prediction-panel,
+.integrity-list {
+  min-width: 0;
+  padding: var(--space-4) var(--space-5) var(--space-6);
+}
+
+/* --------------------------------------------------------- Panel headings */
+
+.artifact-heading,
+.results-heading,
+.ledger-heading,
+.prediction-form-section > header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-5);
+}
+
+.artifact-heading > div:first-child,
+.ledger-heading > div:first-child {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.artifact-heading h3,
+.results-heading h3,
+.report-preview h3,
+.prediction-form-section h3,
+.citation-card h3 {
+  font-family: var(--font-serif);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-tight);
+}
+
+.artifact-heading p,
+.results-heading p,
+.prediction-form-section header p {
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: var(--text-sm);
+}
+
+.artifact-meta {
+  display: flex;
+  gap: var(--space-6);
+}
+
+.artifact-meta > div {
+  display: grid;
+  gap: 2px;
+}
+
+.artifact-meta dt,
+.report-outline strong {
+  color: var(--muted);
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+}
+
+.artifact-meta dd {
+  margin: 0;
+  font-size: var(--text-xs);
+}
+
+.artifact-meta code,
+.results-heading code {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+}
+
+.demo-notice {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: var(--space-3) 0;
+  padding: var(--space-2) var(--space-3);
+  border-left: 3px solid var(--caution);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  background: var(--caution-surface);
+  color: var(--caution);
+  font-size: var(--text-xs);
+}
+
+.artifact-source {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-width: max-content;
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-semibold);
+  text-transform: capitalize;
+}
+
+.artifact-source.source-demo {
+  border-color: var(--caution-line);
+  background: var(--caution-surface);
+  color: var(--caution);
+}
+
+.artifact-source.source-backend {
+  border-color: var(--success-line);
+  background: var(--success-surface);
+  color: var(--success);
+}
+
+/* ------------------------------------------------------------ Data table */
+
+.data-table-wrap {
+  width: 100%;
+  margin-top: var(--space-3);
+  overflow: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+}
+
+.data-table {
+  width: 100%;
+  min-width: 820px;
+  border-collapse: collapse;
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Columns are separated by alignment and a single header rule rather than a
+ * grid of borders around every cell. */
+.data-table th,
+.data-table td {
+  max-width: 190px;
+  padding: var(--space-2) var(--space-3);
+  overflow: hidden;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.data-table tbody tr {
+  border-top: 1px solid var(--line);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .data-table tbody tr:hover {
+    background: var(--bg-hover);
+  }
+}
+
+.data-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  border-bottom: 1px solid var(--line-strong);
+  background: var(--bg-sunken);
+  color: var(--ink-soft);
+  font-weight: var(--weight-semibold);
+}
+
+.data-table thead th span,
+.data-table thead th small {
+  display: block;
+}
+
+.data-table thead th small {
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: var(--weight-normal);
+}
+
+.data-table .row-index {
+  width: 46px;
+  color: var(--faint);
+  text-align: right;
+}
+
+.missing-value {
+  color: var(--caution);
+  font-style: italic;
+}
+
+/* ------------------------------------------------------------- Integrity */
+
+.integrity-list {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.integrity-issue {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--bg-raised);
+  box-shadow: var(--shadow-sm);
+}
+
+.integrity-issue.severity-warning,
+.integrity-issue.severity-blocking {
+  border-left-color: var(--caution);
+}
+
+.integrity-issue.severity-blocking {
+  border-left-color: var(--danger);
+}
+
+.integrity-issue.decision-approved {
+  border-left-color: var(--success);
+}
+
+.integrity-issue > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+}
+
+.integrity-issue__icon {
+  color: var(--caution);
+}
+
+.severity-blocking .integrity-issue__icon {
+  color: var(--danger);
+}
+
+.integrity-issue header > div > span,
+.repair-proposal span,
+.results-heading > div > span,
+.report-preview header > span,
+.prediction-form-section header > div > span,
+.citation-card > div > span,
+.prediction-output > span {
+  color: var(--muted);
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+}
+
+.integrity-issue h3 {
+  font-size: var(--text-base);
+  font-weight: var(--weight-semibold);
+}
+
+.integrity-issue header p {
+  margin-top: var(--space-1);
+  color: var(--ink-soft);
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+}
+
+.decision-status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-width: max-content;
+  color: var(--caution);
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-semibold);
+  text-transform: capitalize;
+}
+
+.decision-approved .decision-status {
+  color: var(--success);
+}
+
+.decision-rejected .decision-status {
+  color: var(--danger);
+}
+
+.integrity-evidence {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  background: var(--line);
+}
+
+.integrity-evidence > div {
+  padding: var(--space-3) var(--space-4);
+  background: var(--bg-sunken);
+}
+
+.integrity-evidence span,
+.learning-explanation strong {
+  color: var(--muted);
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+}
+
+.integrity-evidence p,
+.learning-explanation p,
+.technical-detail p {
+  margin-top: var(--space-1);
+  color: var(--ink-soft);
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+  white-space: pre-wrap;
+}
+
+.technical-detail,
+.learning-explanation {
+  padding: var(--space-2) var(--space-4);
+  border-bottom: 1px solid var(--line);
+}
+
+.technical-detail summary {
+  color: var(--ink-soft);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+}
+
+/*
+ * Repair proposal.
+ *
+ * This is the moment the product exists for: the user is deciding whether to
+ * accept a methodological change. It gets a distinct surface so it never reads
+ * as part of the surrounding explanation.
+ */
+.repair-proposal {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--space-5);
+  align-items: end;
+  padding: var(--space-3) var(--space-4);
+  background: var(--accent-surface);
+}
+
+.repair-proposal > div:first-child {
+  display: grid;
+  gap: 2px;
+}
+
+.repair-proposal strong {
+  color: var(--ink);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+}
+
+.repair-proposal p {
+  color: var(--ink-soft);
+  font-size: var(--text-xs);
+  line-height: var(--leading-snug);
+}
+
+.repair-actions {
+  display: flex;
+  gap: var(--space-2);
+}
+
+/* Shown once a repair has been accepted or declined, in place of the buttons. */
+.repair-decision-copy {
+  color: var(--ink-soft);
+  font-size: var(--text-xs);
+  line-height: var(--leading-snug);
+}
+
+/* --------------------------------------------------------------- Results */
+
+.results-heading {
+  align-items: center;
+}
+
+/*
+ * Metric tiles.
+ *
+ * A hairline grid rather than a row of shadowed cards: at this density card
+ * elevation is decoration, and the 1px gap already separates the values.
+ */
+.metric-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  margin: var(--space-4) 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--line);
+  gap: 1px;
+}
+
+.metric-strip article {
+  display: grid;
+  align-content: start;
+  gap: var(--space-1);
+  min-height: 112px;
+  padding: var(--space-3);
+  background: var(--bg-raised);
+}
+
+.metric-strip article > span,
+.metric-strip article > small {
+  color: var(--muted);
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+}
+
+.metric-strip article > strong {
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: var(--text-xl);
+  font-weight: var(--weight-medium);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--tracking-tight);
+}
+
+.metric-strip p {
+  color: var(--ink-soft);
+  font-size: var(--text-xs);
+  line-height: var(--leading-snug);
+}
+
+.metric-strip article > small {
+  margin-top: auto;
+  font-weight: var(--weight-normal);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.result-figures {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+.result-figures figure {
+  min-width: 0;
+  padding: var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--bg-raised);
+}
+
+.result-figures figcaption {
+  display: grid;
+  margin-bottom: var(--space-2);
+}
+
+.result-figures figcaption strong {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+}
+
+.result-figures figcaption span {
+  color: var(--muted);
+  font-size: var(--text-xs);
+}
+
+.chart-frame {
+  width: 100%;
+  height: 180px;
+}
+
+.causal-caution {
+  margin-top: var(--space-3);
+  color: var(--muted);
+  font-size: var(--text-xs);
+}
+
+/* ---------------------------------------------------------------- Ledger */
+
+.ledger-heading {
+  align-items: center;
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--line);
+}
+
+.ledger-heading span {
+  display: grid;
+}
+
+.ledger-heading strong {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+}
+
+.ledger-heading small {
+  color: var(--muted);
+  font-size: var(--text-xs);
+}
+
+.ledger-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ledger-list li {
+  display: grid;
+  grid-template-columns: 140px minmax(0, 1fr);
+  gap: var(--space-5);
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.ledger-time {
+  display: grid;
+  align-content: start;
+  gap: 2px;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-variant-numeric: tabular-nums;
+}
+
+.ledger-time span {
+  text-transform: uppercase;
+}
+
+.ledger-event {
+  display: grid;
+  gap: 2px;
+}
+
+.ledger-event > span {
+  color: var(--accent);
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+}
+
+.ledger-event strong {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+}
+
+.ledger-event p {
+  color: var(--ink-soft);
+  font-size: var(--text-xs);
+  line-height: var(--leading-snug);
+}
+
+.ledger-event details {
+  margin-top: var(--space-1);
+  color: var(--muted);
+  font-size: var(--text-2xs);
+}
+
+.ledger-event pre {
+  overflow: auto;
+  padding: var(--space-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--bg-sunken);
+  font: var(--text-2xs) / var(--leading-snug) var(--font-mono);
+}
+
+/* ---------------------------------------------------------------- Report */
+
+.report-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(280px, 0.8fr);
+  gap: var(--space-4);
+}
+
+.report-preview,
+.citation-card,
+.prediction-form-section,
+.prediction-output {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--bg-raised);
+}
+
+.report-preview {
+  padding: var(--space-4);
+}
+
+.report-preview header h3,
+.report-preview header p {
+  margin-top: var(--space-1);
+}
+
+.report-preview header p {
+  color: var(--ink-soft);
+  font-size: var(--text-sm);
+}
+
+.report-outline {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1px;
+  margin: var(--space-4) 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--line);
+}
+
+.report-outline > div {
+  display: grid;
+  gap: 2px;
+  padding: var(--space-2) var(--space-3);
+  background: var(--bg-sunken);
+}
+
+.report-outline span {
+  color: var(--ink-soft);
+  font-size: var(--text-xs);
+}
+
+.report-demo-line {
+  color: var(--caution);
+  font-size: var(--text-xs);
+}
+
+.report-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.citation-card {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: var(--bg-sunken);
+}
+
+.citation-card > svg {
+  color: var(--accent);
+}
+
+.citation-card h3,
+.citation-card p {
+  margin-top: var(--space-1);
+}
+
+.citation-card p {
+  color: var(--ink-soft);
+  font-size: var(--text-xs);
+  line-height: var(--leading-normal);
+}
+
+.citation-card blockquote {
+  margin: var(--space-3) 0;
+  padding: var(--space-2) var(--space-3);
+  border-left: 2px solid var(--accent);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  background: var(--bg-raised);
+  color: var(--ink-soft);
+  font: var(--text-2xs) / var(--leading-normal) var(--font-mono);
+}
+
+/* --------------------------------------------------------------- Predict */
+
+.prediction-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(270px, 0.8fr);
+  gap: var(--space-4);
+}
+
+.prediction-form-section,
+.prediction-output {
+  padding: var(--space-4);
+}
+
+.prediction-form-section header h3,
+.prediction-form-section header p {
+  margin-top: 2px;
+}
+
+.prediction-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.prediction-submit {
+  margin-top: var(--space-3);
+}
+
+.prediction-output {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  min-height: 200px;
+  background: var(--bg-sunken);
+}
+
+.prediction-output > strong {
+  margin-top: var(--space-1);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-medium);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--tracking-tight);
+}
+
+.prediction-output > p {
+  margin: var(--space-1) 0 var(--space-2);
+  color: var(--ink-soft);
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+}
+
+.prediction-caution {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--line);
+  color: var(--caution);
+  font-size: var(--text-xs);
+  line-height: var(--leading-snug);
+}

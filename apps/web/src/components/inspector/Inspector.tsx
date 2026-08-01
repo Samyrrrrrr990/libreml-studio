@@ -10,6 +10,7 @@ import {
 import { useMemo } from 'react';
 
 import { NODE_BY_TYPE } from '../../data/catalog';
+import { portColorClass } from '../../lib/portFamily';
 import { useWorkspaceStore } from '../../store/workspace';
 import type { ConfigField } from '../../types/workflow';
 import { NodeIcon } from '../common/NodeIcon';
@@ -190,13 +191,17 @@ export function Inspector({ onRunSelected }: InspectorProps) {
             <div>
               <span>Inputs</span>
               {selectedNode.data.inputs.length ? selectedNode.data.inputs.map((port) => (
-                <code key={port.id}>{port.type}</code>
+                <code key={port.id} className={portColorClass(port.type)} title={port.label}>
+                  {port.type}
+                </code>
               )) : <small>None</small>}
             </div>
             <div>
               <span>Outputs</span>
               {selectedNode.data.outputs.length ? selectedNode.data.outputs.map((port) => (
-                <code key={port.id}>{port.type}</code>
+                <code key={port.id} className={portColorClass(port.type)} title={port.label}>
+                  {port.type}
+                </code>
               )) : <small>None</small>}
             </div>
           </div>

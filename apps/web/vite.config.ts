@@ -26,7 +26,7 @@ export default defineConfig(({ mode }) => {
     server: {
       host: '127.0.0.1',
       port: 5173,
-      strictPort: true,
+      strictPort: false,
       proxy: {
         '/api': {
           target: env.LIBREML_API_URL || 'http://127.0.0.1:8000',

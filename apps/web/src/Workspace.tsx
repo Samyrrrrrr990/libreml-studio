@@ -5,10 +5,13 @@ import { WorkflowCanvas } from './components/canvas/WorkflowCanvas';
 import { Inspector } from './components/inspector/Inspector';
 import { NodeLibrary } from './components/library/NodeLibrary';
 import { AboutDialog } from './components/layout/AboutDialog';
+import { CommandPalette } from './components/layout/CommandPalette';
 import { ToastRegion } from './components/layout/ToastRegion';
 import { TopBar } from './components/layout/TopBar';
 import { BottomPanel } from './components/panels/BottomPanel';
 import { useExecution } from './hooks/useExecution';
+import { useResponsivePanels } from './hooks/useResponsivePanels';
+import { useTheme } from './hooks/useTheme';
 import { libreMlApi } from './lib/api';
 import { parseLocalCsv } from './lib/csv';
 import { useWorkspaceStore } from './store/workspace';
@@ -33,13 +36,31 @@ export function Workspace() {
   const undo = useWorkspaceStore((state) => state.undo);
   const redo = useWorkspaceStore((state) => state.redo);
   const removeSelectedNode = useWorkspaceStore((state) => state.removeSelectedNode);
+  const commandOpen = useWorkspaceStore((state) => state.commandOpen);
+  const setCommandOpen = useWorkspaceStore((state) => state.setCommandOpen);
   const [uploading, setUploading] = useState(false);
   const aboutTriggerRef = useRef<HTMLButtonElement>(null);
   const execution = useExecution();
 
+  useTheme();
+  useResponsivePanels();
+
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       const command = event.metaKey || event.ctrlKey;
+
+      // The palette toggle is deliberately the only shortcut that stays live
+      // while a text field has focus: it is the way out of anywhere.
+      if (command && event.key.toLowerCase() === 'k') {
+        event.preventDefault();
+        setCommandOpen(!commandOpen);
+        return;
+      }
+
+      // Everything below would otherwise fire while the user is typing into a
+      // project title or a node configuration field.
+      if (isEditableTarget(event.target)) return;
+
       if (command && event.key.toLowerCase() === 'z') {
         event.preventDefault();
         if (event.shiftKey) redo();
@@ -51,14 +72,14 @@ export function Workspace() {
         void execution.runAll();
         return;
       }
-      if ((event.key === 'Delete' || event.key === 'Backspace') && selectedNodeId && !isEditableTarget(event.target)) {
+      if ((event.key === 'Delete' || event.key === 'Backspace') && selectedNodeId) {
         event.preventDefault();
         removeSelectedNode();
       }
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [execution, redo, removeSelectedNode, selectedNodeId, undo]);
+  }, [commandOpen, execution, redo, removeSelectedNode, selectedNodeId, setCommandOpen, undo]);
 
   const uploadDataset = async (file: File): Promise<void> => {
     setUploading(true);
@@ -130,6 +151,7 @@ export function Workspace() {
         </main>
         <BottomPanel onRun={execution.runAll} />
         <AboutDialog returnFocusRef={aboutTriggerRef} />
+        <CommandPalette onRun={execution.runAll} />
         <ToastRegion />
       </div>
     </ReactFlowProvider>

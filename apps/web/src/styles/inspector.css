@@ -1,0 +1,197 @@
+/* Node inspector: configuration, contract, and methodological context. */
+
+.inspector__header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border-bottom: 1px solid var(--line);
+}
+
+.inspector__header > div {
+  min-width: 0;
+}
+
+.inspector__header h2 {
+  overflow: hidden;
+  font-family: var(--font-serif);
+  font-size: var(--text-md);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-tight);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.inspector__scroll {
+  min-height: 0;
+  overflow: auto;
+}
+
+/*
+ * Mode guidance.
+ *
+ * Learning Mode and Research Mode are the product's two postures, so the
+ * guidance block is tinted to make the active mode legible at a glance without
+ * a second label.
+ */
+.mode-guidance {
+  padding: var(--space-3);
+  border-bottom: 1px solid var(--line);
+  background: var(--bg-sunken);
+}
+
+.mode-guidance.mode-learning {
+  background: var(--accent-surface);
+}
+
+.mode-guidance__label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--accent);
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+}
+
+.mode-guidance > p {
+  margin-top: var(--space-2);
+  color: var(--ink-soft);
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+}
+
+.learning-io,
+.research-contract {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  margin-top: var(--space-3);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--line);
+}
+
+.research-contract {
+  grid-template-columns: 1fr;
+}
+
+.learning-io > div,
+.research-contract > div {
+  padding: var(--space-2);
+  background: var(--bg-raised);
+}
+
+.learning-io dt,
+.research-contract dt {
+  color: var(--muted);
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+}
+
+.learning-io dd,
+.research-contract dd {
+  margin: 2px 0 0;
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+}
+
+.inspector-section {
+  padding: var(--space-3);
+  border-bottom: 1px solid var(--line);
+}
+
+.inspector-section h3,
+.inspector-section__heading h3 {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+}
+
+.inspector-section__heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+
+.inspector-section__heading span {
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+}
+
+.config-fields {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.advanced-disclosure {
+  margin-top: var(--space-3);
+  border-top: 1px solid var(--line);
+}
+
+.advanced-disclosure summary {
+  padding: var(--space-2) 0;
+  color: var(--ink-soft);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+}
+
+.port-contract__columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+
+.port-contract__columns > div {
+  display: grid;
+  align-content: start;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.port-contract__columns span,
+.port-contract__columns small {
+  color: var(--muted);
+  font-size: var(--text-2xs);
+}
+
+.port-contract__columns code {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  overflow: hidden;
+  color: var(--ink-soft);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  text-overflow: ellipsis;
+}
+
+/* Swatch tying an inspector port row to its colour on the canvas. */
+.port-contract__columns code::before {
+  flex: 0 0 auto;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--port-color, var(--port-generic));
+  content: '';
+}
+
+.inspector__actions {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: var(--space-1);
+  padding: var(--space-2);
+  border-top: 1px solid var(--line);
+  background: var(--bg-surface);
+}

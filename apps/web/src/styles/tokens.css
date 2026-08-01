@@ -1,0 +1,239 @@
+/*
+ * LibreML Studio design tokens.
+ *
+ * Every value the interface uses comes from this file. Component styles must
+ * reference tokens rather than literal colours, sizes, or durations, so that
+ * theming and density changes stay a single-file edit.
+ *
+ * Scales are deliberately short. A long scale is the same as no scale: it lets
+ * any two elements differ by an imperceptible amount and calls it a decision.
+ */
+
+:root {
+  /* ---------------------------------------------------------------------
+   * Typography
+   *
+   * Eight sizes. The workbench is dense, so the base is 13px rather than the
+   * 16px a document-oriented layout would use.
+   * ------------------------------------------------------------------- */
+  --font-sans: 'Source Sans 3 Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-serif: 'Source Serif 4 Variable', ui-serif, Georgia, serif;
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, SFMono-Regular, monospace;
+
+  --text-2xs: 10px;
+  --text-xs: 11px;
+  --text-sm: 12px;
+  --text-base: 13px;
+  --text-md: 15px;
+  --text-lg: 18px;
+  --text-xl: 22px;
+  --text-2xl: 28px;
+
+  /* Four weights. Variable fonts allow 450 or 673; that freedom produced
+   * twelve different weights in the previous stylesheet and no hierarchy. */
+  --weight-normal: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
+  --leading-tight: 1.2;
+  --leading-snug: 1.35;
+  --leading-normal: 1.5;
+
+  /* Tracking is only ever applied to small uppercase labels and display text. */
+  --tracking-tight: -0.02em;
+  --tracking-wide: 0.06em;
+
+  /* ---------------------------------------------------------------------
+   * Spacing: 4px base grid.
+   * ------------------------------------------------------------------- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+
+  /* ---------------------------------------------------------------------
+   * Shape
+   * ------------------------------------------------------------------- */
+  --radius-sm: 5px;
+  --radius: 8px;
+  --radius-lg: 12px;
+  --radius-full: 999px;
+
+  /* ---------------------------------------------------------------------
+   * Motion
+   *
+   * The built-in CSS easings are too weak to read as intentional. These are
+   * stronger variants. `ease-in` is deliberately absent: it delays the first
+   * frame, which is the frame the user is watching most closely.
+   * ------------------------------------------------------------------- */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+
+  --dur-instant: 100ms;
+  --dur-fast: 140ms;
+  --dur-base: 180ms;
+  --dur-slow: 240ms;
+
+  /* ---------------------------------------------------------------------
+   * Layout constants
+   * ------------------------------------------------------------------- */
+  --topbar-height: 52px;
+  --panel-tabs-height: 40px;
+  --library-width: 280px;
+  --inspector-width: 332px;
+
+  /* Layered surfaces. z-index is only ever set from this list. */
+  --z-canvas-ui: 4;
+  --z-panel: 15;
+  --z-topbar: 30;
+  --z-drawer: 40;
+  --z-popover: 60;
+  --z-dialog: 100;
+  --z-toast: 120;
+}
+
+/* =======================================================================
+ * Light theme: warm paper.
+ *
+ * The palette is the product's identity and is preserved from the original
+ * design. What changed is the separation between levels: the canvas now sits
+ * measurably below the panels so the workflow reads as the surface being
+ * worked on rather than another panel.
+ * ==================================================================== */
+:root,
+:root[data-theme='light'] {
+  color-scheme: light;
+
+  --bg-canvas: #e9e5da;
+  --bg-base: #f2efe7;
+  --bg-surface: #faf8f3;
+  --bg-raised: #fffefb;
+  --bg-sunken: #ebe7dd;
+  --bg-hover: #f0ece2;
+  --bg-active: #e7e2d6;
+
+  /* Text ramp. Every step is verified against the surfaces it is used on;
+   * see docs/development/design-tokens.md for the measured ratios. */
+  --ink: #1b2b3d;
+  --ink-soft: #44566b;
+  --muted: #5c656f;
+  --faint: #6e7470;
+
+  --line: #ddd6c8;
+  --line-strong: #c4bbaa;
+
+  --accent: #8f5518;
+  --accent-hover: #7d4a14;
+  --accent-contrast: #fffdf8;
+  --accent-surface: #f6e7cd;
+  --accent-line: #d9b57e;
+
+  --success: #2f5f4e;
+  --success-surface: #dcebe3;
+  --success-line: #9dc2b1;
+
+  --caution: #855f24;
+  --caution-surface: #f7ebd4;
+  --caution-line: #d9b881;
+
+  --danger: #93382d;
+  --danger-surface: #f7e0da;
+  --danger-line: #dda99c;
+
+  /* Shadows are tinted toward the background hue. A neutral black shadow on a
+   * warm surface reads as dirt rather than depth. */
+  --shadow-sm: 0 1px 2px rgb(72 58 36 / 0.07);
+  --shadow-md: 0 2px 6px rgb(72 58 36 / 0.07), 0 1px 2px rgb(72 58 36 / 0.05);
+  --shadow-lg: 0 8px 24px rgb(72 58 36 / 0.1), 0 2px 6px rgb(72 58 36 / 0.05);
+  --shadow-xl: 0 24px 64px rgb(52 42 26 / 0.18), 0 4px 12px rgb(52 42 26 / 0.08);
+
+  --scrim: rgb(27 43 61 / 0.4);
+  --focus-ring: 0 0 0 2px var(--bg-surface), 0 0 0 4px var(--accent);
+  --canvas-dot: #c9c1b1;
+}
+
+/* =======================================================================
+ * Dark theme: warm ink.
+ *
+ * Neutral-cool greys (the usual zinc/slate reach) would sever the connection
+ * to the paper identity. These greys keep a small amount of warmth so the
+ * amber accent still belongs to the same family.
+ * ==================================================================== */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --bg-canvas: #131519;
+  --bg-base: #1a1d22;
+  --bg-surface: #212429;
+  --bg-raised: #282c33;
+  --bg-sunken: #16181c;
+  --bg-hover: #2d3138;
+  --bg-active: #343941;
+
+  --ink: #e9e7e2;
+  --ink-soft: #b6b3ab;
+  --muted: #a5a299;
+  --faint: #9a978f;
+
+  --line: #32363d;
+  --line-strong: #474c55;
+
+  --accent: #d9a05a;
+  --accent-hover: #e6b070;
+  --accent-contrast: #1a1207;
+  /* Kept close to the neutral surfaces. A heavier amber tint over a large area
+   * (the import panel, the repair proposal) turns muddy brown rather than warm. */
+  --accent-surface: #2f2921;
+  --accent-line: #54462f;
+
+  --success: #6fbf9c;
+  --success-surface: #1d3229;
+  --success-line: #34614c;
+
+  --caution: #d6a75c;
+  --caution-surface: #352a17;
+  --caution-line: #5e4a25;
+
+  --danger: #e28d7e;
+  --danger-surface: #3a221d;
+  --danger-line: #6b3a30;
+
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.3);
+  --shadow-md: 0 2px 6px rgb(0 0 0 / 0.32), 0 1px 2px rgb(0 0 0 / 0.24);
+  --shadow-lg: 0 8px 24px rgb(0 0 0 / 0.4), 0 2px 6px rgb(0 0 0 / 0.26);
+  --shadow-xl: 0 24px 64px rgb(0 0 0 / 0.55), 0 4px 12px rgb(0 0 0 / 0.35);
+
+  --scrim: rgb(8 9 11 / 0.62);
+  --focus-ring: 0 0 0 2px var(--bg-surface), 0 0 0 4px var(--accent);
+  --canvas-dot: #2b2f36;
+}
+
+/*
+ * Port type colours.
+ *
+ * The typed graph is the core abstraction, so port types carry a hue. These
+ * are defined once per theme and consumed by handles, edges, and the type
+ * legend, which keeps a connection the same colour everywhere it appears.
+ */
+:root,
+:root[data-theme='light'] {
+  --port-dataset: #3f6ea8;
+  --port-model: #7a4ea8;
+  --port-metrics: #2f7a63;
+  --port-report: #9c5e1b;
+  --port-generic: #5d6b7a;
+}
+
+:root[data-theme='dark'] {
+  --port-dataset: #7aa9de;
+  --port-model: #b48ede;
+  --port-metrics: #64c0a2;
+  --port-report: #d9a05a;
+  --port-generic: #93a2b3;
+}

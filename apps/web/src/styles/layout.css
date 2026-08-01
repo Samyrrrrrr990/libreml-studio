@@ -1,0 +1,350 @@
+/* Application shell: top bar, docked panel geometry, canvas frame. */
+
+.workspace-shell {
+  display: grid;
+  grid-template-rows: var(--topbar-height) minmax(0, 1fr) var(--panel-tabs-height);
+  width: 100%;
+  height: 100dvh;
+  min-height: 560px;
+  overflow: hidden;
+  background: var(--bg-base);
+}
+
+.workspace-shell.artifacts-visible {
+  grid-template-rows: var(--topbar-height) minmax(220px, 1fr) clamp(240px, 34dvh, 380px);
+}
+
+/*
+ * Docked panels resize the grid instantly rather than transitioning it.
+ *
+ * Animating grid-template-columns forces a layout pass on the React Flow
+ * canvas every frame of the transition, which drops frames on any non-trivial
+ * workflow. The panel contents fade and slide instead: transform and opacity
+ * are compositor-only, so the motion is free and the canvas is untouched.
+ */
+.workspace-main {
+  position: relative;
+  display: grid;
+  grid-template-columns: 0 minmax(0, 1fr) 0;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.workspace-shell.library-visible .workspace-main {
+  grid-template-columns: var(--library-width) minmax(0, 1fr) 0;
+}
+
+.workspace-shell.inspector-visible .workspace-main {
+  grid-template-columns: 0 minmax(0, 1fr) var(--inspector-width);
+}
+
+.workspace-shell.library-visible.inspector-visible .workspace-main {
+  grid-template-columns: var(--library-width) minmax(0, 1fr) var(--inspector-width);
+}
+
+/* ---------------------------------------------------------------- Top bar */
+
+.topbar {
+  position: relative;
+  z-index: var(--z-topbar);
+  display: grid;
+  grid-template-columns: auto minmax(140px, 1fr) auto;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+  padding: 0 var(--space-2) 0 var(--space-3);
+  border-bottom: 1px solid var(--line);
+  background: var(--bg-surface);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: max-content;
+  text-decoration: none;
+}
+
+.brand-mark {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius-sm);
+  background: var(--ink);
+  color: var(--bg-raised);
+  font-family: var(--font-serif);
+  font-size: var(--text-md);
+  font-weight: var(--weight-bold);
+  line-height: 1;
+}
+
+.brand-wordmark {
+  font-family: var(--font-serif);
+  font-size: var(--text-md);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-tight);
+}
+
+.topbar__divider {
+  width: 1px;
+  height: 20px;
+  background: var(--line);
+}
+
+/* Project brief opens as a popover from the title in the bar. */
+.project-brief {
+  position: relative;
+  min-width: 0;
+  max-width: 440px;
+  justify-self: start;
+}
+
+.project-brief > summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  list-style: none;
+  transition: background-color var(--dur-fast) ease;
+}
+
+.project-brief > summary::-webkit-details-marker {
+  display: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .project-brief > summary:hover {
+    background: var(--bg-hover);
+  }
+}
+
+.project-brief > summary > span {
+  display: grid;
+  min-width: 0;
+}
+
+.project-brief > summary strong,
+.project-brief > summary small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.project-brief > summary strong {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+}
+
+.project-brief > summary small {
+  color: var(--muted);
+  font-size: var(--text-xs);
+}
+
+.project-brief > summary svg {
+  color: var(--muted);
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+
+.project-brief[open] > summary svg {
+  transform: rotate(180deg);
+}
+
+.project-brief__popover {
+  position: absolute;
+  top: calc(100% + var(--space-2));
+  left: 0;
+  z-index: var(--z-popover);
+  display: grid;
+  gap: var(--space-3);
+  width: min(400px, calc(100vw - 32px));
+  padding: var(--space-4);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--bg-raised);
+  box-shadow: var(--shadow-xl);
+  /* Popovers scale from the trigger they belong to, not from their centre. */
+  transform-origin: top left;
+  animation: popover-in var(--dur-base) var(--ease-out);
+}
+
+@keyframes popover-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(-4px);
+  }
+}
+
+.project-brief__popover h2 {
+  font-family: var(--font-serif);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+}
+
+.project-brief__popover > p {
+  color: var(--muted);
+  font-size: var(--text-xs);
+}
+
+.project-brief__row {
+  display: grid;
+  grid-template-columns: 1fr 0.7fr;
+  gap: var(--space-3);
+}
+
+.topbar__tools {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.history-controls {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+/*
+ * Engine status.
+ *
+ * The dot alone would encode state in colour only. The label carries the same
+ * information in text, so the dot is reinforcement rather than the signal.
+ */
+.engine-status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: max-content;
+  padding: 0 var(--space-2);
+  height: 24px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-full);
+  background: var(--bg-sunken);
+  color: var(--muted);
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-semibold);
+}
+
+.engine-status > i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  font-style: normal;
+}
+
+.engine-status.status-online {
+  border-color: var(--success-line);
+  background: var(--success-surface);
+  color: var(--success);
+}
+
+.engine-status.status-demo {
+  border-color: var(--caution-line);
+  background: var(--caution-surface);
+  color: var(--caution);
+}
+
+.run-button {
+  min-width: 108px;
+}
+
+.global-progress {
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 2px;
+  overflow: hidden;
+  background: var(--bg-sunken);
+}
+
+.global-progress > span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-origin: left;
+  background: var(--accent);
+  transition: transform var(--dur-base) var(--ease-out);
+}
+
+.global-progress.is-indeterminate > span,
+.node-progress.is-indeterminate > span {
+  width: 34%;
+  transform: translateX(-110%);
+  transform-origin: center;
+  animation: indeterminate-progress 1.15s ease-in-out infinite;
+}
+
+/* --------------------------------------------------------- Docked panels */
+
+.node-library,
+.inspector {
+  position: relative;
+  z-index: var(--z-panel);
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--bg-surface);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.node-library.is-open,
+.inspector.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Contents settle in after the grid has already resized. */
+.node-library.is-open > *,
+.inspector.is-open > * {
+  animation: panel-content-in var(--dur-slow) var(--ease-out) backwards;
+}
+
+@keyframes panel-content-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+
+.node-library {
+  display: grid;
+  grid-template-rows: auto auto auto minmax(0, 1fr);
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border-right: 1px solid var(--line);
+}
+
+.inspector {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  border-left: 1px solid var(--line);
+}
+
+.panel-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.panel-heading h2 {
+  font-family: var(--font-serif);
+  font-size: var(--text-md);
+  font-weight: var(--weight-semibold);
+}
+
+.panel-heading p {
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: var(--text-xs);
+  line-height: var(--leading-snug);
+}
+
+.panel-close {
+  display: none;
+}

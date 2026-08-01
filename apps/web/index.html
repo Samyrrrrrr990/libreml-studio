@@ -3,12 +3,43 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#f1eee6" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f2efe7" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1a1d22" />
     <meta
       name="description"
       content="LibreML Studio is a local-first visual workbench for transparent machine-learning and statistical research."
     />
     <title>LibreML Studio</title>
+    <script>
+      /*
+       * Resolve the theme before first paint.
+       *
+       * React applies the same attribute once it mounts, but that is at least
+       * one frame after the browser has painted the body background. Without
+       * this the app flashes light before switching to dark, which is the most
+       * visible possible bug on a tool people open in a dark room.
+       *
+       * Reads the same persisted key as the workspace store and fails open to
+       * the system preference: a corrupt or absent value must never prevent the
+       * application from rendering.
+       */
+      (function () {
+        try {
+          var stored = localStorage.getItem('libreml-workspace-v1');
+          var preference = stored ? JSON.parse(stored).state.theme : 'system';
+          var dark =
+            preference === 'dark' ||
+            (preference !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+        } catch (error) {
+          document.documentElement.dataset.theme = window.matchMedia(
+            '(prefers-color-scheme: dark)',
+          ).matches
+            ? 'dark'
+            : 'light';
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

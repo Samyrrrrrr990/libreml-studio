@@ -14,15 +14,26 @@ All notable changes will be documented here. The project follows [Keep a Changel
 - Local HTML, Markdown, and JSON research reports with provenance, limitations, environment details, and software citation; exact fitted-pipeline interactive prediction.
 - Bundled synthetic Community Learning Outcomes workflow and local dataset for the documented golden path.
 - Repository governance, CI, security, privacy, citation, methodology, contributor, architecture, and development documentation.
+- Design token layer for the workbench with documented type, weight, spacing, shape, elevation, and motion scales, plus a contrast regression test that fails the suite if a palette change drops any pair below its WCAG threshold.
+- Light and dark themes, following the system preference by default and applied before first paint to avoid a flash of the wrong theme.
+- Command palette (Control or Command K) covering node insertion, run, view, mode, appearance, and layout actions, with keyword matching and full keyboard navigation.
+- Zoom-aware level of detail on the workflow canvas, so node titles stay legible when a whole pipeline is fitted to the viewport.
+- Port type colour families shared by canvas handles, edges, the canvas legend, and the inspector, with the exact type available on hover.
+- Node catalogue grouped by category with sticky headers and arrow-key navigation.
 
 ### Changed
 
+- Workbench stylesheet split from a single 2,554-line file into ordered modules under `apps/web/src/styles`, with the previous 20 font sizes reduced to an eight-step scale and 12 font weights to four.
+- Canvas nodes report status through a header marker and edge stripe instead of a dedicated footer row on every node, and edge type labels appear on hover or selection rather than permanently.
+- Docked panels resize the workspace grid instantly and animate their contents instead, so opening a panel no longer forces a layout pass on the canvas each frame.
 - Average Precision is named explicitly rather than being presented as generic precision-recall area, with holdout prevalence reported as its baseline.
 - Binary ranking metrics now require an explicit positive class or emit a visible class-ordering warning; multiclass ROC AUC is labelled as support-weighted one-vs-rest.
 - Reports and result payloads distinguish fitted backend artifacts from illustrative browser demonstration values.
 
 ### Fixed
 
+- Restored the workflow canvas below the 960px breakpoint, where the absolutely positioned side panels left it in a zero-width grid column, and stopped both drawers from opening over it at once.
+- Deferred the initial canvas fit until the canvas has real dimensions, so a workflow is no longer left off-screen at minimum zoom when panels collapse after mount.
 - Prevented failed or partial reruns from serving unrelated or stale model, metric, prediction, or report artifacts.
 - Preserved node warnings across cache hits and rejected forged, already-consumed, or invalid repair requests.
 - Rejected unsafe paths, hostile Host/Origin requests, oversized transformations, and raw boundary values in validation errors.

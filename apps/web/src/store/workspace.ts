@@ -31,6 +31,15 @@ import type {
 
 export type WorkspacePanel = 'data' | 'integrity' | 'results' | 'ledger' | 'report' | 'predict';
 
+/**
+ * Theme preference.
+ *
+ * `system` is the default and is not resolved here: the resolved value depends
+ * on a media query that can change while the app is open, so resolution lives
+ * in the theme effect rather than in persisted state.
+ */
+export type ThemePreference = 'light' | 'dark' | 'system';
+
 const now = (): string => new Date().toISOString();
 const makeId = (prefix: string): string => `${prefix}-${crypto.randomUUID().slice(0, 10)}`;
 const cloneSnapshot = (nodes: WorkflowNode[], edges: WorkflowEdge[]): GraphSnapshot =>
@@ -66,7 +75,9 @@ interface WorkspaceState {
   libraryOpen: boolean;
   inspectorOpen: boolean;
   aboutOpen: boolean;
+  commandOpen: boolean;
   advancedOpen: boolean;
+  theme: ThemePreference;
   backendOnline: boolean | null;
   demoExecutionEnabled: boolean;
   lastSavedAt: string;
@@ -105,7 +116,9 @@ interface WorkspaceState {
   setLibraryOpen: (open: boolean) => void;
   setInspectorOpen: (open: boolean) => void;
   setAboutOpen: (open: boolean) => void;
+  setCommandOpen: (open: boolean) => void;
   setAdvancedOpen: (open: boolean) => void;
+  setTheme: (theme: ThemePreference) => void;
   notify: (toast: Omit<ToastMessage, 'id'>) => void;
   dismissToast: (id: string) => void;
 }
@@ -134,7 +147,9 @@ export const useWorkspaceStore = create<WorkspaceState>()(
       libraryOpen: true,
       inspectorOpen: true,
       aboutOpen: false,
+      commandOpen: false,
       advancedOpen: false,
+      theme: 'system',
       backendOnline: null,
       demoExecutionEnabled: false,
       lastSavedAt: now(),
@@ -517,7 +532,9 @@ export const useWorkspaceStore = create<WorkspaceState>()(
       setLibraryOpen: (libraryOpen) => set({ libraryOpen }),
       setInspectorOpen: (inspectorOpen) => set({ inspectorOpen }),
       setAboutOpen: (aboutOpen) => set({ aboutOpen }),
+      setCommandOpen: (commandOpen) => set({ commandOpen }),
       setAdvancedOpen: (advancedOpen) => set({ advancedOpen }),
+      setTheme: (theme) => set({ theme }),
 
       notify: (toast) =>
         set((state) => ({ toasts: [...state.toasts.slice(-3), { ...toast, id: makeId('toast') }] })),
@@ -536,6 +553,7 @@ export const useWorkspaceStore = create<WorkspaceState>()(
         results: state.results,
         audit: state.audit,
         lastSavedAt: state.lastSavedAt,
+        theme: state.theme,
       }),
       merge: (persisted, current) => {
         const saved = persisted as Partial<WorkspaceState>;
@@ -550,6 +568,7 @@ export const useWorkspaceStore = create<WorkspaceState>()(
           past: [],
           future: [],
           toasts: [],
+          commandOpen: false,
           backendOnline: null,
         };
       },
